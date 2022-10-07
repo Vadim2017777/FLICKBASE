@@ -26,6 +26,7 @@
     "mongoose": "^6.6.4",
     "mongoose-aggregate-paginate-v2": "^1.0.6",
     "nodemon": "^2.0.20",
+    "validator": "^13.7.0",
     "xss-clean": "^0.1.1"
   }
 }
