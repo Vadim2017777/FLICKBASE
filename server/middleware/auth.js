@@ -7,6 +7,7 @@ const verify = (req, res, resolve, reject, rights) => async (err, user) => {
   if (err || !user) {
     return reject(new ApiError(httpStatus.UNAUTHORIZED, "Sorry, unauthorized"));
   }
+
   req.user = {
     _id: user._id,
     email: user.email,
@@ -41,6 +42,7 @@ const auth =
       passport.authenticate(
         "jwt",
         { session: false },
+
         verify(req, res, resolve, reject, rights)
       )(req, res, next);
     })
