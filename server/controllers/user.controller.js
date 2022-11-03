@@ -15,6 +15,13 @@ const userController = {
       next(error);
     }
   },
+  async updateProfile(req, res, next) {
+    try {
+      const user = await userService.updateUserProfile(req);
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 module.exports = userController;
