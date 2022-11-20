@@ -1,5 +1,6 @@
 /// MODELS
 const httpStatus = require("http-status");
+const { default: isEmail } = require("validator/lib/isEmail");
 const { ApiError } = require("../middleware/apiError");
 const { User } = require("../models/user");
 
@@ -13,7 +14,7 @@ const findUserById = async (_id) => {
 
 const updateUserProfile = async (req) => {
   try {
-    const user3 = await User.findOneAndUpdate(
+    const user = await User.findOneAndUpdate(
       { _id: req.user._id },
       {
         $set: {
@@ -33,8 +34,33 @@ const updateUserProfile = async (req) => {
   }
 };
 
+const updateUserEmail = async (req) => {
+  try {
+    if (await User.emailTaken(req.body.newemail)) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Sorry email taken");
+    }
+    const user = await User.findOneAndUpdate(
+      { _id: req.user._id, email: req.user.email },
+      {
+        $set: {
+          email: req.body.newemail,
+          verified: false,
+        },
+      },
+      { new: true }
+    );
+    if (!user) {
+      throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   findUserByEmail,
   findUserById,
   updateUserProfile,
+  updateUserEmail,
 };
