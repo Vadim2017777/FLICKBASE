@@ -82,6 +82,13 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return match;
 };
 
+userSchema.methods.generateRegisterToken = function () {
+  let user = this;
+  const userObj = { sub: user._id.toHexString(), email: user.emal };
+  const token = jwt.sign(userObj, process.env.DB_SECRET, { expiresIn: "10h" });
+  return token;
+};
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = { User };

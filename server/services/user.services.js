@@ -1,6 +1,8 @@
 /// MODELS
 const httpStatus = require("http-status");
-const { default: isEmail } = require("validator/lib/isEmail");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
 const { ApiError } = require("../middleware/apiError");
 const { User } = require("../models/user");
 
@@ -58,9 +60,14 @@ const updateUserEmail = async (req) => {
   }
 };
 
+const validateToken = (token) => {
+  return jwt.verify(token, process.env.DB_SECRET);
+};
+
 module.exports = {
   findUserByEmail,
   findUserById,
   updateUserProfile,
   updateUserEmail,
+  validateToken,
 };
