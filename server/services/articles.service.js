@@ -15,4 +15,30 @@ const addArticle = async (body) => {
   }
 };
 
-module.exports = { addArticle };
+const getArticleById = async (_id, user) => {
+  try {
+    const article = await Article.findById(_id);
+    if (!article) throw new ApiError(httpStatus.NOT_FOUND, "Article not found");
+    if (user.role === "user" && article.status === "draft") {
+      throw new ApiError(httpStatus.NOT_FOUND, "Sorry you are not allowed");
+    }
+    return article;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getUserArticleById = async (_id) => {
+  try {
+    const article = await Article.findById(_id);
+    if (!article) throw new ApiError(httpStatus.NOT_FOUND, "Article not found");
+    if (article.status === "draft") {
+      throw new ApiError(httpStatus.NOT_FOUND, "Sorry you are not allowed");
+    }
+    return article;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { addArticle, getArticleById, getUserArticleById };

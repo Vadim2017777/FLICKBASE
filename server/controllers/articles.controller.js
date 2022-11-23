@@ -10,6 +10,30 @@ const articlesController = {
       next(error);
     }
   },
+
+  async getArticleById(req, res, next) {
+    try {
+      const _id = req.params.id;
+
+      const article = await articlesService.getArticleById(_id, req.user);
+
+      res.json(article);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getUsersArticleById(req, res, next) {
+    try {
+      const _id = req.params.id;
+
+      const article = await articlesService.getUserArticleById(_id);
+
+      res.json(article);
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 module.exports = articlesController;
