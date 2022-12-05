@@ -4,7 +4,7 @@ import MainLayout from "./hoc/mainLayout";
 
 import Header from "./components/navigation/header";
 import Home from "./components/home";
-import MainLayout from "./hoc/mainLayout";
+import Auth from "./components/auth/index";
 
 const Router = () => {
   return (
@@ -12,6 +12,7 @@ const Router = () => {
       <Header />
       <MainLayout>
         <Routes>
+          <Route path="/auth" element={<Auth />} />
           <Route path="/" element={<Home />} />
         </Routes>
       </MainLayout>
