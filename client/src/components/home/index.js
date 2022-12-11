@@ -1,5 +1,11 @@
+
+
 const Home = () => {
-  return <>index</>;
-};
+    return(
+        <>
+            home
+        </>
+    )
+}
 
 export default Home;

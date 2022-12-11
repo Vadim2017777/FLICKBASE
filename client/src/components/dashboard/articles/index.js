@@ -1,5 +1,15 @@
+import { AdminTitle } from '../../../utils/tools'
+
+
 const AdminArticles = () => {
-  return <>ADMIN ARTICLES</>;
-};
+
+    return(
+        <>
+            <AdminTitle title="Articles"/>
+        ADMIN ARTICLES
+        </>
+    )
+
+}
 
 export default AdminArticles;
