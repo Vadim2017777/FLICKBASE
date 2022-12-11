@@ -1,7 +1,7 @@
 // lib
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useFormik, FieldArray, FormikProvider } from 'formik';
-import { useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 // comp
 import { AdminTitle } from '../../../../utils/tools';
 import { errorHelper, Loader } from '../../../../utils/tools'
@@ -9,7 +9,7 @@ import { validation, formValues } from './validationSchema'
 import WYSIWYG from '../../../../utils/form/wysiwyg';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
-import { addArticle } from '../../../../store/actions/articles';
+import { getAdminArticle, updateArticle } from '../../../../store/actions/articles';
 
 // MUI
 import TextField from '@mui/material/TextField'
@@ -29,25 +29,23 @@ import AddIcon from '@mui/icons-material/Add';
 // import { visuallyHidden } from '@mui/utils';
 
 
-const AddArticle = () => {
+const EditArticle = () => {
+    const [loading,setLoading] = useState(true);
+    const [formData,setFormData] = useState(formValues)
+    const [editorContent,setEditorContent] = useState(null);
     const [editorBlur,setEditorBlur] = useState(false);
     // redux
-    const articles = useSelector(state=>state.articles);
     const dispatch = useDispatch();
 
     const actorsValue = useRef('');
-    let navigate = useNavigate();
+    let { articleId } = useParams();
 
     const formik = useFormik({
         enableReinitialize:true,
-        initialValues: formValues,
+        initialValues: formData,
         validationSchema:validation,
         onSubmit:(values)=>{
-            dispatch(addArticle(values))
-            .unwrap()
-            .then(()=>{
-                navigate('/dashboard/articles')
-            })
+            dispatch(updateArticle({values,articleId}))
         }
     })
 
@@ -60,11 +58,30 @@ const AddArticle = () => {
         setEditorBlur(true)
     }
 
+    ///// edit 
+    useEffect(()=>{
+        dispatch(getAdminArticle(articleId))
+        .unwrap()
+        .then(response => {
+            setLoading(false);
+            setFormData(response);
+            setEditorContent(response.content)
+        })
+
+    },[dispatch,articleId])
+
+
+
+    //// edit
+
+
 
     return(
         <>
-            <AdminTitle title="Add article"/>
-           
+            <AdminTitle title="Edit article"/>
+            { loading ?
+                <Loader/>
+            :
             <form className='mt-3 article_form' onSubmit={formik.handleSubmit}>
 
                 <div className='form-group'>
@@ -84,6 +101,7 @@ const AddArticle = () => {
                         setEditorBlur={(blur)=> handleEditorBlur(blur)}
                         onError={formik.errors.content}
                         editorBlur={editorBlur}
+                        editorContent={editorContent}
                     />
                     { formik.errors.content || (formik.errors.content && editorBlur) ?
                         <FormHelperText error={true}>
@@ -201,24 +219,20 @@ const AddArticle = () => {
 
                 <Divider className='mt-3 mb-3'/>
 
-                { articles.loading ?
-                    <Loader/>
-                :
+         
                 <Button
                     variant='contained'
                     color="primary"
                     type="submit"
                 >
-                    Add article
+                    Edit article
                 </Button>
-                }
-
-
+            
             </form>
-
+            }
         </>
     )
 
 }
 
-export default AddArticle
+export default EditArticle
