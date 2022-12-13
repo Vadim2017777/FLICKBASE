@@ -124,3 +124,34 @@ export const removeArticle = createAsyncThunk(
     }
   }
 );
+
+export const homeLoadMore = createAsyncThunk(
+  "articles/homeLoadMore",
+  async (sort, { dispatch, getState }) => {
+    try {
+      const articles = await axios.post(`/api/articles/all`, sort);
+      const state = getState().articles.articles;
+
+      const prevState = [...state];
+      const newState = [...prevState, ...articles.data];
+
+      return { newState, sort };
+    } catch (error) {
+      dispatch(errorGlobal(error.response.data.message));
+      throw error;
+    }
+  }
+);
+
+export const getArticle = createAsyncThunk(
+  "articles/getArticle",
+  async (id, { dispatch }) => {
+    try {
+      const request = await axios.get(`/api/articles/users/article/${id}`);
+      return request.data;
+    } catch (error) {
+      dispatch(errorGlobal(error.response.data.message));
+      throw error;
+    }
+  }
+);
